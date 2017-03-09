@@ -31,7 +31,8 @@ class Sentry_ext
   {
     $settings = array();
 
-    $settings['sentry_dsn'] = array('i', '', "");
+    $settings['sentry_dsn'] = array('i', '', '');
+    $settings['sentry_config'] = array('t', array('rows' => '10'), '');
 
     return $settings;
   }
@@ -79,7 +80,12 @@ class Sentry_ext
    * Start Sentry
    */
   function sentry_add() {
-    $client = new Raven_Client($this->settings['sentry_dsn']);
+      if($this->settings['sentry_config']) {
+          $config = json_decode($this->settings['sentry_config'], true);
+          $client = new Raven_Client($this->settings['sentry_dsn'], $config);
+      } else {
+          $client = new Raven_Client($this->settings['sentry_dsn']);
+      }
 
       if(isset(ee()->session->userdata->email)) {
           $client->user_context(array(
@@ -87,9 +93,9 @@ class Sentry_ext
           ));
       }
 
-    $error_handler = new Raven_ErrorHandler($client);
-    $error_handler->registerExceptionHandler();
-    $error_handler->registerErrorHandler();
-    $error_handler->registerShutdownFunction();
+      $error_handler = new Raven_ErrorHandler($client);
+      $error_handler->registerExceptionHandler();
+      $error_handler->registerErrorHandler();
+      $error_handler->registerShutdownFunction();
   }
 }

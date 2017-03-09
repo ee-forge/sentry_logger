@@ -12,6 +12,7 @@ $lang = array(
 // Additional Key => Value pairs go here
 
   'sentry_dsn'  => 'Sentry DSN',
+    'sentry_config' => 'Sentry Configuration',
 
 // END
   ''=>''
